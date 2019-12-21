@@ -1,45 +1,11 @@
 # Drone Pipeline
-pipeline:
-  build:
-    image: node
-    commands:
-      - cd frontend
-      - npm i redis --save
+kind: pipeline
+type: kubernetes
+name: default
 
-  test:
-    image: node
-    commands:
-      - cd frontend
-      - npm i redis --save
-      - npm test
-
-  publish-redis:
-    image: plugins/docker
-    dockerfile: ./redis/Dockerfile
-    context: ./redis
-    repo: chrisjsimpson/redis
-    tags: [latest, v2]
-    secrets: [ docker_username, docker_password ]
-
-  publish-frontend:
-    image: plugins/docker
-    dockerfile: ./frontend/Dockerfile
-    context: ./frontend
-    repo: chrisjsimpson/frontend
-    tags: [latest, v2]
-    secrets: [ docker_username, docker_password ]
-
-  kubectl-redis:
-    image: chrisjsimpson/drone-kubectl-helm
-    secrets: [ kubernetes_server, kubernetes_cert, kubernetes_token ]
-    kubectl: "apply -f ./redis/deployment.yaml"
-
-  kubectl-frontend:
-    image: chrisjsimpson/drone-kubectl-helm
-    secrets: [ kubernetes_server, kubernetes_cert, kubernetes_token ]
-    kubectl: "apply -f ./frontend/deployment.yaml"
-
-  test-deployment:
-    image: chrisjsimpson/drone-kubectl-helm
-    secrets: [ kubernetes_server, kubernetes_cert, kubernetes_token ]
-    kubectl: "get deployment frontend"
+steps:
+- name: build
+  image: node
+  commands:
+    - cd frontend
+    - npm i redis --save
