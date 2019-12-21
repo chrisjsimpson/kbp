@@ -17,7 +17,7 @@ pipeline:
     image: plugins/docker
     dockerfile: ./redis/Dockerfile
     context: ./redis
-    repo: dstrebel/redis
+    repo: chrisjsimpson/redis
     tags: [latest, v2]
     secrets: [ docker_username, docker_password ]
 
@@ -25,21 +25,21 @@ pipeline:
     image: plugins/docker
     dockerfile: ./frontend/Dockerfile
     context: ./frontend
-    repo: dstrebel/frontend
+    repo: chrisjsimpson/frontend
     tags: [latest, v2]
     secrets: [ docker_username, docker_password ]
 
   kubectl-redis:
-    image: dstrebel/drone-kubectl-helm
+    image: chrisjsimpson/drone-kubectl-helm
     secrets: [ kubernetes_server, kubernetes_cert, kubernetes_token ]
     kubectl: "apply -f ./redis/deployment.yaml"
 
   kubectl-frontend:
-    image: dstrebel/drone-kubectl-helm
+    image: chrisjsimpson/drone-kubectl-helm
     secrets: [ kubernetes_server, kubernetes_cert, kubernetes_token ]
     kubectl: "apply -f ./frontend/deployment.yaml"
 
   test-deployment:
-    image: dstrebel/drone-kubectl-helm
+    image: chrisjsimpson/drone-kubectl-helm
     secrets: [ kubernetes_server, kubernetes_cert, kubernetes_token ]
     kubectl: "get deployment frontend"
